@@ -1,11 +1,93 @@
-<form method="post">
-    {% csrf_token %}
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username">
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password">
-    <br>
-    <input type="submit" value="Login">
-  </form>
+{% extends 'base/base.html' %}
+{% block header %}{% include 'header/header.html' %}{% endblock %}
+{% block footer %}{% include 'footer/footer.html' %}{% endblock %}
+{% block content %}
+
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Sign in to your account</h4>
+                    <form method="post" id="login-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username or email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-block" onclick="login()" >Sign in</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  <script>
+    function login() {
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
+      const csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+
+    $.ajax({
+    url: '/graphql',
+    type: 'POST',
+    data: JSON.stringify({
+        query: `mutation($username: String!, $password: String!) {
+          login(username: $username, password: $password) {
+            user {
+              username
+              email
+            }
+          }
+        }`,
+        variables: {
+            username: $('#username').val(),
+            password: $('#password').val()
+        }
+    }),
+    contentType: 'application/json',
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+    },
+    success: function (response) {
+      if(response.data.login){
+        //handle success
+        window.location.href = "/home"
+      }else{
+        //handle error
+      }
+    }
+    });
+    }
+
+  
+    // client.query({
+    //   query: gql`
+    //     {
+    //       me {
+    //         username
+    //         email
+    //       }
+    //     }
+    //   `
+    // }).then(function(response) {
+    //   var user = response.data.me;
+    //   if (user) {
+    //     // display user information
+    //   } else {
+    //     // display login/register form
+    //   }
+    // });
+  </script>
+  
+
+{% endblock %}
   
