@@ -14,11 +14,11 @@ Django 4.x
 # Installation
 Clone the repository: 
 - git clone https://github.com//MuhammadZainJaved/BasicAuthentication.git
-Install the requirements:
+# Install the requirements:
 - pip install -r requirements.txt
-Run migrations: 
+# Run migrations: 
 - python manage.py migrate
-Start the development server:
+# Start the development server:
 - python manage.py runserver
 # Usage
 
